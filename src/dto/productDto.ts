@@ -1,6 +1,6 @@
 import { IsString, IsNumber, IsOptional } from "class-validator";
 
-export class Product {
+export class CreateProduct {
   @IsString()
   name!: string;
 
@@ -15,19 +15,19 @@ export class Product {
 }
 
 export class UpdateProduct {
-  @IsString()
   @IsOptional()
+  @IsString()
   name?: string;
 
-  @IsNumber()
   @IsOptional()
+  @IsNumber()
   price?: number;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   image?: string;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   description?: string;
 }

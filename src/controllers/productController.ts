@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import productService from "../services";
 import utils from "../utlis";
-import { Product, UpdateProduct } from "../dto/productDto";
+import { CreateProduct, UpdateProduct } from "../dto/productDto";
 
 const createProduct = async (
   req: Request,
@@ -10,7 +10,7 @@ const createProduct = async (
 ) => {
   console.log("controller");
   try {
-    const product: Product = req.body;
+    const product: CreateProduct = req.body;
 
     const result = await productService.createProduct(product);
     console.log("result: ", result);
@@ -55,6 +55,7 @@ const deleteProduct = async (
 ) => {
   try {
     const productId: string = req.params.productId;
+    if (!productId) utils.throwError(400, "해당 상품이 없습니다.");
     const deletedResult = await productService.deleteProduct(productId);
     console.log("deletedResult: ", deletedResult);
     return res.status(201).json({
@@ -67,6 +68,49 @@ const deleteProduct = async (
   }
 };
 
-const productController = { createProduct, updateProduct, deleteProduct };
+const getAllProducts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const allProducts = await productService.getAllProducts();
+    return res.status(200).json({
+      message: "OK",
+      allProducts: allProducts,
+    });
+  } catch (e) {
+    console.log(e);
+    next(e);
+  }
+};
+
+const getProductById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const productId: string = req.params.productId;
+    const productDetail = await productService.getProductById(productId);
+
+    console.log("productDetail: ", productDetail);
+    return res.status(200).json({
+      message: "OK",
+      productDetail: productDetail,
+    });
+  } catch (e) {
+    console.log(e);
+    next(e);
+  }
+};
+
+const productController = {
+  createProduct,
+  updateProduct,
+  deleteProduct,
+  getProductById,
+  getAllProducts,
+};
 
 export default productController;
